@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { products, CURRENCY } from "@/data/products";
+import AddToCartButton from "@/components/AddToCartButton";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -37,9 +38,12 @@ export default async function ProductPage({
             </span>
           </p>
           <p className="mt-4 text-gray-600">{product.description}</p>
-          <button className="mt-6 rounded-lg bg-black px-6 py-3 text-white">
-            კალათაში დამატება
-          </button>
+          <AddToCartButton
+            slug={product.slug}
+            name={product.name}
+            price={product.price}
+            emoji={product.emoji}
+          />
         </div>
       </div>
     </main>
