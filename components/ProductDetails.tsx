@@ -10,8 +10,13 @@ import { siteText } from "@/i18n/siteDictionary";
 export default function ProductDetails({ product }: { product: Product }) {
   const { t, pick, money, lang } = useI18n();
   const s = siteText[lang];
-  const discount = Math.round((1 - product.price / product.oldPrice) * 100);
   const name = pick(product.name);
+
+  const hasDiscount =
+    typeof product.oldPrice === "number" && product.oldPrice > product.price;
+  const discount = hasDiscount
+    ? Math.round((1 - product.price / product.oldPrice) * 100)
+    : 0;
 
   const related = products
     .filter((p) => p.category === product.category && p.slug !== product.slug)
@@ -28,9 +33,11 @@ export default function ProductDetails({ product }: { product: Product }) {
 
       <div className="mt-4 grid gap-6 rounded-2xl bg-white p-4 shadow-sm sm:p-6 md:grid-cols-2 md:gap-10">
         <div className="relative">
-          <span className="absolute left-2 top-2 z-10 rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
-            -{discount}%
-          </span>
+          {hasDiscount && (
+            <span className="absolute left-2 top-2 z-10 rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
+              -{discount}%
+            </span>
+          )}
           <ProductImage
             image={product.image}
             emoji={product.emoji}
@@ -44,10 +51,15 @@ export default function ProductDetails({ product }: { product: Product }) {
           <p className="mt-3">
             <span className="text-3xl font-extrabold text-pink-600">
               {money(product.price)}
-            </span>{" "}
-            <span className="text-lg text-gray-400 line-through">
-              {money(product.oldPrice)}
             </span>
+            {hasDiscount && (
+              <>
+                {" "}
+                <span className="text-lg text-gray-400 line-through">
+                  {money(product.oldPrice)}
+                </span>
+              </>
+            )}
           </p>
           <p className="mt-4 text-gray-600">{pick(product.description)}</p>
 

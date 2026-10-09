@@ -20,7 +20,11 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("default");
 
-  const discountOf = (p: (typeof products)[number]) => 1 - p.price / p.oldPrice;
+  // ფასდაკლება (0-დან 1-მდე). თუ რეალური ძველი ფასი არ არის, ფასდაკლება 0-ია.
+  const discountOf = (p: (typeof products)[number]) => {
+    const old = p.oldPrice;
+    return typeof old === "number" && old > p.price ? 1 - p.price / old : 0;
+  };
 
   const visible = products
     .filter((p) => {
@@ -123,6 +127,7 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {visible.map((p) => {
               const discount = Math.round(discountOf(p) * 100);
+              const hasDiscount = discount > 0;
               const name = pick(p.name);
               return (
                 <Link
@@ -130,9 +135,11 @@ export default function Home() {
                   href={`/product/${p.slug}`}
                   className="relative rounded-2xl bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                 >
-                  <span className="absolute left-2 top-2 z-10 rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white">
-                    -{discount}%
-                  </span>
+                  {hasDiscount && (
+                    <span className="absolute left-2 top-2 z-10 rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white">
+                      -{discount}%
+                    </span>
+                  )}
                   <ProductImage image={p.image} emoji={p.emoji} name={name} />
                   <p className="mt-3 text-xs text-gray-500">
                     {cats[p.category]}
@@ -141,10 +148,15 @@ export default function Home() {
                   <p className="mt-1">
                     <span className="text-lg font-extrabold text-pink-600">
                       {money(p.price)}
-                    </span>{" "}
-                    <span className="text-sm text-gray-400 line-through">
-                      {money(p.oldPrice)}
                     </span>
+                    {hasDiscount && p.oldPrice !== undefined && (
+                      <>
+                        {" "}
+                        <span className="text-sm text-gray-400 line-through">
+                          {money(p.oldPrice)}
+                        </span>
+                      </>
+                    )}
                   </p>
                 </Link>
               );
