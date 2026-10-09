@@ -1,62 +1,80 @@
-export const CURRENCY = "₾";
+import type { Localized } from "@/i18n/dictionary";
 
 export type Product = {
   slug: string;
-  name: string;
-  price: number;
-  oldPrice: number;
+  name: Localized;
+  price: number; // USD
+  oldPrice: number; // USD
   emoji: string;
-  description: string;
+  image?: string;
+  description: Localized;
 };
 
 export const products: Product[] = [
   {
     slug: "wireless-earbuds",
-    name: "უსადენო ყურსასმენები",
-    price: 59,
-    oldPrice: 89,
+    name: { en: "Wireless Earbuds", ka: "უსადენო ყურსასმენები" },
+    price: 22,
+    oldPrice: 33,
     emoji: "🎧",
-    description:
-      "Bluetooth 5.3, ხმაურის შემცირება, 24 საათიანი ბატარეა ქეისთან ერთად.",
+    description: {
+      en: "Bluetooth 5.3, noise reduction, 24-hour battery life with the charging case.",
+      ka: "Bluetooth 5.3, ხმაურის შემცირება, 24 საათიანი ბატარეა ქეისთან ერთად.",
+    },
   },
   {
     slug: "smart-watch",
-    name: "ჭკვიანი საათი",
-    price: 129,
-    oldPrice: 179,
+    name: { en: "Smart Watch", ka: "ჭკვიანი საათი" },
+    price: 48,
+    oldPrice: 66,
     emoji: "⌚",
-    description: "გულისცემის მონიტორინგი, ნაბიჯების მთვლელი, წყალგაუმტარი.",
+    description: {
+      en: "Heart-rate monitor, step counter, water resistant.",
+      ka: "გულისცემის მონიტორინგი, ნაბიჯების მთვლელი, წყალგაუმტარი.",
+    },
   },
   {
     slug: "power-bank",
-    name: "პაუერბანკი 20000mAh",
-    price: 49,
-    oldPrice: 69,
+    name: { en: "Power Bank 20000mAh", ka: "პაუერბანკი 20000mAh" },
+    price: 18,
+    oldPrice: 26,
     emoji: "🔋",
-    description: "სწრაფი დამუხტვა, 2 USB პორტი და Type-C.",
+    description: {
+      en: "Fast charging, 2 USB ports and Type-C.",
+      ka: "სწრაფი დამუხტვა, 2 USB პორტი და Type-C.",
+    },
   },
   {
     slug: "phone-stand",
-    name: "ტელეფონის სადგამი",
-    price: 19,
-    oldPrice: 29,
+    name: { en: "Phone Stand", ka: "ტელეფონის სადგამი" },
+    price: 7,
+    oldPrice: 11,
     emoji: "📱",
-    description: "რეგულირებადი კუთხე, ალუმინის კორპუსი, არ სრიალებს.",
+    description: {
+      en: "Adjustable angle, aluminium body, non-slip.",
+      ka: "რეგულირებადი კუთხე, ალუმინის კორპუსი, არ სრიალებს.",
+    },
   },
   {
     slug: "led-lamp",
-    name: "LED მაგიდის ლამპა",
-    price: 39,
-    oldPrice: 55,
+    name: { en: "LED Desk Lamp", ka: "LED მაგიდის ლამპა" },
+    price: 14,
+    oldPrice: 20,
     emoji: "💡",
-    description: "3 განათების რეჟიმი, USB დამუხტვა, თვალისთვის უსაფრთხო.",
+    description: {
+      en: "3 lighting modes, USB charging, eye-friendly light.",
+      ka: "3 განათების რეჟიმი, USB დამუხტვა, თვალისთვის უსაფრთხო.",
+    },
   },
   {
     slug: "car-charger",
-    name: "ავტომობილის დამტენი",
-    price: 25,
-    oldPrice: 35,
+    name: { en: "Car Charger", ka: "ავტომობილის დამტენი" },
+    price: 9,
+    oldPrice: 13,
     emoji: "🚗",
-    description: "ორმაგი პორტი, სწრაფი დამუხტვა 36W.",
+    description: {
+      en: "Dual port, 36W fast charging.",
+      ka: "ორმაგი პორტი, სწრაფი დამუხტვა 36W.",
+    },
   },
 ];

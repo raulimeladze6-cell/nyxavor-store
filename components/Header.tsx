@@ -2,26 +2,71 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useI18n } from "@/context/I18nContext";
+import { LANGS, CURRENCIES, Lang, Currency } from "@/i18n/dictionary";
 
 export default function Header() {
   const { totalCount } = useCart();
+  const { t, lang, setLang, currency, setCurrency } = useI18n();
+
+  const selectClass =
+    "rounded-full border bg-white px-2 py-1 text-xs font-medium sm:text-sm";
 
   return (
-    <header className="flex items-center justify-between border-b px-6 py-4">
-      <Link href="/" className="text-xl font-bold tracking-widest">
-        NYXAVOR
-      </Link>
-      <Link
-        href="/cart"
-        className="relative rounded-lg border px-4 py-2 hover:bg-gray-100"
-      >
-        🛒 კალათა
-        {totalCount > 0 && (
-          <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black text-xs text-white">
-            {totalCount}
-          </span>
-        )}
-      </Link>
-    </header>
+    <>
+      <div className="bg-gradient-to-r from-pink-500 via-orange-500 to-yellow-400 px-4 py-2 text-center text-xs font-semibold text-white sm:text-sm">
+        {t("topBanner")}
+      </div>
+      <header className="sticky top-0 z-50 border-b bg-white/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-6">
+          <Link
+            href="/"
+            className="bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-lg font-extrabold tracking-widest text-transparent sm:text-2xl"
+          >
+            NYXAVOR
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value as Lang)}
+              className={selectClass}
+              aria-label="Language"
+            >
+              {LANGS.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as Currency)}
+              className={selectClass}
+              aria-label="Currency"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+
+            <Link
+              href="/cart"
+              className="relative rounded-full bg-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-700 sm:px-4"
+            >
+              🛒 <span className="hidden sm:inline">{t("cart")}</span>
+              {totalCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-pink-500 text-xs text-white">
+                  {totalCount}
+                </span>
+              )}
+            </Link>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }
