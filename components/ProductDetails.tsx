@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import type { Product } from "@/data/products";
+import { products, type Product } from "@/data/products";
 import AddToCartButton from "@/components/AddToCartButton";
 import ProductImage from "@/components/ProductImage";
 import { useI18n } from "@/context/I18nContext";
+import { siteText } from "@/i18n/siteDictionary";
 
 export default function ProductDetails({ product }: { product: Product }) {
-  const { t, pick, money } = useI18n();
+  const { t, pick, money, lang } = useI18n();
+  const s = siteText[lang];
   const discount = Math.round((1 - product.price / product.oldPrice) * 100);
   const name = pick(product.name);
+
+  const related = products
+    .filter((p) => p.category === product.category && p.slug !== product.slug)
+    .slice(0, 4);
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-10">
@@ -57,8 +63,39 @@ export default function ProductDetails({ product }: { product: Product }) {
             <li>{t("securePay")}</li>
             <li>{t("easyReturns")}</li>
           </ul>
+          <Link
+            href="/info/shipping"
+            className="mt-3 inline-block text-sm font-medium text-pink-600 hover:underline"
+          >
+            {s.shippingDetails}
+          </Link>
         </div>
       </div>
+
+      {related.length > 0 && (
+        <section className="mt-10">
+          <h2 className="mb-4 text-xl font-extrabold">{s.related}</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {related.map((p) => (
+              <Link
+                key={p.slug}
+                href={`/product/${p.slug}`}
+                className="rounded-2xl bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <ProductImage
+                  image={p.image}
+                  emoji={p.emoji}
+                  name={pick(p.name)}
+                />
+                <h3 className="mt-2 text-sm font-semibold">{pick(p.name)}</h3>
+                <p className="text-sm font-extrabold text-pink-600">
+                  {money(p.price)}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

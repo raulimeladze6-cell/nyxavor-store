@@ -14,7 +14,7 @@ export default function ProductImage({
   emojiSize = "text-6xl",
 }: Props) {
   return (
-    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white">
+    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#ffffff]">
       {image ? (
         <Image
           src={image}
