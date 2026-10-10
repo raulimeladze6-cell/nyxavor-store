@@ -28,17 +28,14 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  // სერვერული ბილდისთვის უსაფრთხო კლიენტი
-  const supabase =
-    typeof window !== "undefined" ? createClient() : (null as any);
-
   useEffect(() => {
-    if (!user || !supabase) {
+    if (!user) {
       setLoading(false);
       return;
     }
 
     async function fetchOrders() {
+      const supabase = createClient();
       const { data, error } = await supabase
         .from("orders")
         .select("*")
@@ -52,9 +49,8 @@ export default function ProfilePage() {
     }
 
     fetchOrders();
-  }, [user, supabase]);
+  }, [user]);
 
-  // მრავალენოვანი ტექსტების დამხმარე ობიექტი 6-ივე ენისთვის
   const dict = {
     en: {
       authReq: "Please sign in",

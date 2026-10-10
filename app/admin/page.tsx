@@ -31,10 +31,6 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  // სერვერული ბილდისთვის უსაფრთხო კლიენტი
-  const supabase =
-    typeof window !== "undefined" ? createClient() : (null as any);
-
   const fetchOrders = async () => {
     try {
       const res = await fetch("/api/admin/orders");
@@ -52,8 +48,7 @@ export default function AdminPage() {
   useEffect(() => {
     fetchOrders();
 
-    if (!supabase) return;
-
+    const supabase = createClient();
     const channel = supabase
       .channel("admin-orders-realtime")
       .on(
@@ -74,11 +69,9 @@ export default function AdminPage() {
       .subscribe();
 
     return () => {
-      if (supabase) {
-        supabase.removeChannel(channel);
-      }
+      supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, []);
 
   const updateStatus = async (orderId: string, newStatus: string) => {
     try {
