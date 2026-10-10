@@ -103,7 +103,7 @@ export default function Home() {
           </select>
         </div>
 
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+        <div className="mb-6 flex gap-2 no-scrollbar overflow-x-auto pb-2 ">
           <button
             onClick={() => setCategory("all")}
             className={chipClass(category === "all")}

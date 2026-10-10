@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { products } from "@/data/products";
 import { SITE } from "@/data/site";
+import { createClient } from "@supabase/supabase-js";
 
 const str = (v: unknown, max: number) =>
   typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -13,11 +14,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "bad_request" }, { status: 400 });
   }
 
-  // ბოტებისგან დაცვა: ადამიანი ამ ველს ვერ ხედავს და არ ავსებს
+  // ბოტებისგან დაცვა
   if (str(data.website, 200)) {
     return NextResponse.json({ ok: true, orderId: "NX-OK" });
   }
 
+  const userId = str(data.userId, 100);
   const name = str(data.name, 100);
   const email = str(data.email, 150);
   const phone = str(data.phone, 40);
@@ -34,9 +36,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid" }, { status: 400 });
   }
 
-  // ფასებს ვითვლით სერვერზე, ბრაუზერიდან მოსულ ფასს არ ვენდობით
+  // ფასების დათვლა და პროდუქტების შეგროვება სერვერზე
   const rawItems = Array.isArray(data.items) ? data.items.slice(0, 50) : [];
   const lines: string[] = [];
+  const verifiedItems = [];
   let total = 0;
 
   for (const raw of rawItems) {
@@ -48,6 +51,14 @@ export async function POST(req: Request) {
     }
     const sum = product.price * qty;
     total += sum;
+
+    verifiedItems.push({
+      slug: product.slug,
+      name: product.name.en,
+      price: product.price,
+      quantity: qty,
+    });
+
     lines.push(
       `- ${product.name.en} (${product.slug}) x ${qty} = $${sum.toFixed(2)}`,
     );
@@ -57,57 +68,78 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "empty" }, { status: 400 });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.ORDER_EMAIL;
-  if (!apiKey || !to) {
-    console.error("Missing RESEND_API_KEY or ORDER_EMAIL");
-    return NextResponse.json({ error: "not_configured" }, { status: 500 });
+  const orderId = "NX-" + Date.now().toString(36).toUpperCase();
+
+  // 1. შეკვეთის და პროდუქტების ჩწერა Supabase ბაზაში
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (supabaseUrl && supabaseKey) {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { error: dbError } = await supabase.from("orders").insert([
+      {
+        user_id: userId || null,
+        customer_name: name,
+        email: email,
+        phone: phone,
+        address: `${address}, ${city}, ${postal}, ${country}`,
+        notes: notes,
+        total_amount: total,
+        status: "pending",
+        items: verifiedItems, // <--- აი აქ ემატება პროდუქტები jsonb სვეტში!
+      },
+    ]);
+
+    if (dbError) {
+      console.error("--- SUPABASE DB INSERT ERROR ---", dbError);
+      return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
   }
 
-  const orderId = "NX-" + Date.now().toString(36).toUpperCase();
-  const prefix = SITE.demo ? "[DEMO] " : "";
+  // 2. ელფოსტის გაგზავნა Resend-ით
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.ORDER_EMAIL;
 
-  const text = [
-    `${prefix}New order ${orderId}`,
-    "",
-    "ITEMS",
-    ...lines,
-    "",
-    `TOTAL: $${total.toFixed(2)} USD (shipping not included)`,
-    "",
-    "CUSTOMER",
-    `Name: ${name}`,
-    `Email: ${email}`,
-    `Phone: ${phone}`,
-    "",
-    "SHIPPING ADDRESS",
-    `${address}`,
-    `${city}, ${postal}`,
-    `Country: ${country}`,
-    "",
-    `Notes: ${notes || "-"}`,
-    `Customer language/currency: ${lang} / ${currency}`,
-  ].join("\n");
+  if (apiKey && to) {
+    const prefix = SITE.demo ? "[DEMO] " : "";
+    const text = [
+      `${prefix}New order ${orderId}`,
+      "",
+      "ITEMS",
+      ...lines,
+      "",
+      `TOTAL: $${total.toFixed(2)} USD (shipping not included)`,
+      "",
+      "CUSTOMER",
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      "",
+      "SHIPPING ADDRESS",
+      `${address}`,
+      `${city}, ${postal}`,
+      `Country: ${country}`,
+      "",
+      `Notes: ${notes || "-"}`,
+      `Customer language/currency: ${lang} / ${currency}`,
+    ].join("\n");
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: `${SITE.name} <onboarding@resend.dev>`,
-      to: [to],
-      reply_to: email,
-      subject: `${prefix}New order ${orderId} ($${total.toFixed(2)})`,
-      text,
-    }),
-  });
-
-  if (!res.ok) {
-    const detail = await res.text();
-    console.error("Resend error:", res.status, detail);
-    return NextResponse.json({ error: "send_failed" }, { status: 502 });
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `${SITE.name} <onboarding@resend.dev>`,
+        to: [to],
+        reply_to: email,
+        subject: `${prefix}New order ${orderId} ($${total.toFixed(2)})`,
+        text,
+      }),
+    }).catch(() => {});
   }
 
   return NextResponse.json({ ok: true, orderId });
