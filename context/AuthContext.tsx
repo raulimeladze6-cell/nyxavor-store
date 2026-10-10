@@ -9,7 +9,7 @@ import {
   ReactNode,
   useMemo,
 } from "react";
-import type { User } from "@supabase/supabase-js";     
+import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 
 export type AuthMode = "login" | "register";
@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [modal, setModal] = useState<AuthMode | null>(null);
 
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = createClient();
 
   const configured = !!(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
