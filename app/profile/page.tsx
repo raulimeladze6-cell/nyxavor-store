@@ -27,10 +27,13 @@ export default function ProfilePage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const supabase = createClient();
+
+  // სერვერული ბილდისთვის უსაფრთხო კლიენტი
+  const supabase =
+    typeof window !== "undefined" ? createClient() : (null as any);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !supabase) {
       setLoading(false);
       return;
     }
@@ -187,7 +190,6 @@ export default function ProfilePage() {
     },
   };
 
-  // ვირჩევთ მიმდინარე ენას (თუ უცნობია, ვბრუნდებით ქართულზე/ინგლისურზე)
   const tLang = dict[lang as keyof typeof dict] || dict.ka;
 
   if (!user) {
