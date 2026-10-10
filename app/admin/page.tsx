@@ -26,11 +26,14 @@ type Order = {
 
 export default function AdminPage() {
   const { user } = useAuth();
-  const { money } = useI18n(); // <--- ვიყენებთ მზა money ფუნქციას
+  const { money } = useI18n();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const supabase = createClient();
+
+  // სერვერული ბილდისთვის უსაფრთხო კლიენტი
+  const supabase =
+    typeof window !== "undefined" ? createClient() : (null as any);
 
   const fetchOrders = async () => {
     try {
@@ -48,6 +51,8 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchOrders();
+
+    if (!supabase) return;
 
     const channel = supabase
       .channel("admin-orders-realtime")
@@ -69,7 +74,9 @@ export default function AdminPage() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (supabase) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [supabase]);
 
