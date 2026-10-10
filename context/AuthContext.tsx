@@ -9,7 +9,7 @@ import {
   ReactNode,
   useMemo,
 } from "react";
-import type { User } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";     
 import { createClient } from "@/utils/supabase/client";
 
 export type AuthMode = "login" | "register";
@@ -118,7 +118,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth უნდა გამოიყენო AuthProvider-ის შიგნით");
