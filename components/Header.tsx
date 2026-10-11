@@ -7,6 +7,7 @@ import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { accountText } from "@/i18n/accountDictionary";
 import SettingsPanel from "@/components/SettingsPanel";
+import { SITE } from "@/data/site";
 
 export default function Header() {
   const { totalCount } = useCart();
@@ -29,7 +30,7 @@ export default function Header() {
             href="/"
             className="bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-lg font-extrabold tracking-wider text-transparent sm:text-2xl sm:tracking-widest"
           >
-            NYXAVOR
+            {SITE.name.toUpperCase()}
           </Link>
 
           <div className="flex items-center gap-2">

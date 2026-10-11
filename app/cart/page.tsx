@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useI18n } from "@/context/I18nContext";
@@ -8,7 +9,33 @@ import { products } from "@/data/products";
 export default function CartPage() {
   const { items, removeItem, changeQuantity, clearCart, totalPrice } =
     useCart();
-  const { t, pick, money } = useI18n();
+  const { t, pick, money, lang } = useI18n();
+
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0); // 0.10 = 10%
+  const [promoError, setPromoError] = useState("");
+  const [promoSuccess, setPromoSuccess] = useState("");
+
+  const handleApplyPromo = () => {
+    setPromoError("");
+    setPromoSuccess("");
+
+    if (promoCode.trim().toUpperCase() === "NYX10") {
+      setDiscount(0.1);
+      setPromoSuccess(
+        lang === "ka"
+          ? "🎉 10%-იანი ფასდაკლების კოდი გააქტიურებულია!"
+          : "🎉 10% promo code applied successfully!",
+      );
+    } else {
+      setPromoError(
+        lang === "ka" ? "არასწორი პრომო კოდი" : "Invalid promo code",
+      );
+    }
+  };
+
+  const finalPrice = totalPrice * (1 - discount);
+  const savedAmount = totalPrice * discount;
 
   if (items.length === 0) {
     return (
@@ -69,19 +96,73 @@ export default function CartPage() {
         })}
       </ul>
 
-      <div className="mt-6 flex items-center justify-between border-t pt-4 text-xl font-bold">
-        <span>{t("total")}</span>
-        <span>{money(totalPrice)}</span>
+      {/* პრომო კოდის ველი */}
+      <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm">
+        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+          {lang === "ka" ? "პრომო კოდი" : "Promo Code"}
+        </label>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={promoCode}
+            onChange={(e) => setPromoCode(e.target.value)}
+            placeholder={lang === "ka" ? "მაგ: NYX10" : "e.g. NYX10"}
+            className="flex-1 rounded-xl border border-gray-300 px-4 py-2 text-sm uppercase focus:border-pink-500 focus:outline-none"
+          />
+          <button
+            onClick={handleApplyPromo}
+            className="rounded-xl bg-gray-900 px-5 py-2 text-sm font-bold text-white hover:bg-gray-800"
+          >
+            {lang === "ka" ? "გამოყენება" : "Apply"}
+          </button>
+        </div>
+        {promoError && (
+          <p className="mt-2 text-xs font-semibold text-red-500">
+            {promoError}
+          </p>
+        )}
+        {promoSuccess && (
+          <p className="mt-2 text-xs font-semibold text-green-600">
+            {promoSuccess}
+          </p>
+        )}
+      </div>
+
+      {/* ჯამური თანხის სექცია */}
+      <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm space-y-2">
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>{lang === "ka" ? "ქვეჯამი:" : "Subtotal:"}</span>
+          <span>{money(totalPrice)}</span>
+        </div>
+
+        {discount > 0 && (
+          <div className="flex justify-between text-sm font-bold text-green-600">
+            <span>
+              {lang === "ka" ? "ფასდაკლება (10%):" : "Discount (10%):"}
+            </span>
+            <span>-{money(savedAmount)}</span>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between border-t pt-3 text-xl font-extrabold text-gray-900">
+          <span>{t("total")}</span>
+          <span className={discount > 0 ? "text-pink-600" : ""}>
+            {money(finalPrice)}
+          </span>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <Link
           href="/checkout"
-          className="rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 text-center font-bold text-white"
+          className="flex-1 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 text-center font-bold text-white shadow-lg hover:brightness-105"
         >
           {t("checkout")}
         </Link>
-        <button onClick={clearCart} className="rounded-full border px-6 py-3">
+        <button
+          onClick={clearCart}
+          className="rounded-full border px-6 py-3 font-semibold text-gray-700 hover:bg-gray-50"
+        >
           {t("clearCart")}
         </button>
       </div>

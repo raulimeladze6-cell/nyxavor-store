@@ -8,14 +8,63 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DemoBanner from "@/components/DemoBanner";
 import AuthModal from "@/components/AuthModal";
+import SocialProofPopup from "@/components/SocialProofPopup";
+import SpinWheelModal from "@/components/SpinWheelModal";
 import { SITE } from "@/data/site";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
-  title: "Nyxavor | Trending products at great prices",
+  title: {
+    default: "Nyxavor Store | Trending products at great prices",
+    template: "%s | Nyxavor Store",
+  },
   description:
-    "Trending products across electronics, home, beauty, fashion and more",
+    "Trending products across electronics, home, beauty, fashion and more at Nyxavor Store.",
+  keywords: [
+    "Nyxavor",
+    "Online Store",
+    "Batumi",
+    "Shopping",
+    "Discounts",
+    "Electronics",
+  ],
+  authors: [{ name: "Nyxavor Empire" }],
+  metadataBase: new URL("https://nyxavor-store.vercel.app"), // შეცვალე შენი რეალური Vercel/Custom დომენით
   robots: SITE.demo ? { index: false, follow: false } : undefined,
+
+  // Open Graph (Facebook, Messenger, WhatsApp, Instagram, Telegram)
+  openGraph: {
+    title: "Nyxavor Store | Trending products at great prices",
+    description:
+      "Discover exclusive deals, discounts, and high-quality trending products at Nyxavor Store!",
+    url: "https://nyxavor-store.vercel.app", // შეცვალე შენი Vercel დომენით
+    siteName: "Nyxavor Store",
+    images: [
+      {
+        url: "/og-image.jpg", // ფოტო უნდა ჩააგდო public/og-image.jpg ფოლდერში
+        width: 1200,
+        height: 630,
+        alt: "Nyxavor Store Showcase",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+
+  // Twitter / X Card
+  twitter: {
+    card: "summary_large_image",
+    title: "Nyxavor Store | Trending products at great prices",
+    description:
+      "Discover exclusive deals and trending products at Nyxavor Store!",
+    images: ["/og-image.jpg"],
+  },
+
+  // Favicon & Icons
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -42,6 +91,8 @@ export default function RootLayout({
               {children}
               <Footer />
               <AuthModal />
+              <SocialProofPopup />
+              <SpinWheelModal />
               <Analytics />
               <SpeedInsights />
             </CartProvider>

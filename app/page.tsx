@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { products, CATEGORIES, Category } from "@/data/products";
 import ProductImage from "@/components/ProductImage";
+import FlashSaleTimer from "@/components/FlashSaleTimer";
 import { useI18n } from "@/context/I18nContext";
 import { homeText, categoryNames } from "@/i18n/homeDictionary";
 import { siteText } from "@/i18n/siteDictionary";
@@ -80,6 +81,9 @@ export default function Home() {
         id="products"
         className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-10 sm:px-6"
       >
+        {/* Flash Sale ტაიმერი */}
+        <FlashSaleTimer />
+
         <h2 className="mb-4 text-2xl font-extrabold">{h.popular}</h2>
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row">
