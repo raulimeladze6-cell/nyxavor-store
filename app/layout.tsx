@@ -1,5 +1,6 @@
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { I18nProvider } from "@/context/I18nContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     "Electronics",
   ],
   authors: [{ name: "Nyxavor Empire" }],
-  metadataBase: new URL("https://nyxavor-store.vercel.app"), // შეცვალე შენი რეალური Vercel/Custom დომენით
+  metadataBase: new URL("https://nyxavor-store.vercel.app"),
   robots: SITE.demo ? { index: false, follow: false } : undefined,
 
   // Open Graph (Facebook, Messenger, WhatsApp, Instagram, Telegram)
@@ -37,11 +38,11 @@ export const metadata: Metadata = {
     title: "Nyxavor Store | Trending products at great prices",
     description:
       "Discover exclusive deals, discounts, and high-quality trending products at Nyxavor Store!",
-    url: "https://nyxavor-store.vercel.app", // შეცვალე შენი Vercel დომენით
+    url: "https://nyxavor-store.vercel.app",
     siteName: "Nyxavor Store",
     images: [
       {
-        url: "/og-image.jpg", // ფოტო უნდა ჩააგდო public/og-image.jpg ფოლდერში
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Nyxavor Store Showcase",
@@ -95,6 +96,21 @@ export default function RootLayout({
               <SpinWheelModal />
               <Analytics />
               <SpeedInsights />
+
+              {/* Crisp Live Chat */}
+              <Script id="crisp-widget" strategy="afterInteractive">
+                {`
+                  window.$crisp=[];
+                  window.CRISP_WEBSITE_ID="e724fa4f-4de8-4f02-a148-a1b276d5de18";
+                  (function(){
+                    d=document;
+                    s=d.createElement("script");
+                    s.src="https://client.crisp.chat/l.js";
+                    s.async=1;
+                    d.getElementsByTagName("head")[0].appendChild(s);
+                  })();
+                `}
+              </Script>
             </CartProvider>
           </AuthProvider>
         </I18nProvider>

@@ -65,6 +65,13 @@ export default function SettingsPanel({
     openAuth(mode);
   };
 
+  const openLiveChat = () => {
+    onClose();
+    if (typeof window !== "undefined" && (window as any).$crisp) {
+      (window as any).$crisp.push(["do", "chat:open"]);
+    }
+  };
+
   return (
     <>
       <div
@@ -177,10 +184,18 @@ export default function SettingsPanel({
           </div>
         </section>
 
-        {/* ინფორმაცია */}
+        {/* ინფორმაცია / Help */}
         <section>
           <p className="mb-2 text-sm font-medium">{s.help}</p>
           <ul className="space-y-1 text-sm">
+            <li>
+              <button
+                onClick={openLiveChat}
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 font-semibold text-pink-600 hover:bg-pink-50 text-left"
+              >
+                <span>💬</span> Live Support / მხარდაჭერა
+              </button>
+            </li>
             {LEGAL_SLUGS.map((slug) => (
               <li key={slug}>
                 <Link

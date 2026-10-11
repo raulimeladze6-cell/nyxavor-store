@@ -10,6 +10,12 @@ export default function Footer() {
   const { t, lang } = useI18n();
   const s = siteText[lang];
 
+  const openSupportChat = () => {
+    if (typeof window !== "undefined" && (window as any).$crisp) {
+      (window as any).$crisp.push(["do", "chat:open"]);
+    }
+  };
+
   return (
     <footer className="mt-10 bg-gray-900 px-6 py-10 text-sm text-gray-300">
       <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2">
@@ -22,6 +28,14 @@ export default function Footer() {
         <div>
           <p className="mb-3 font-semibold text-white">{s.help}</p>
           <ul className="space-y-2">
+            <li>
+              <button
+                onClick={openSupportChat}
+                className="flex items-center gap-2 hover:text-white transition-colors text-left font-medium text-pink-400 hover:text-pink-300"
+              >
+                <span>💬</span> Live Support / მხარდაჭერა
+              </button>
+            </li>
             {LEGAL_SLUGS.map((slug) => (
               <li key={slug}>
                 <Link href={`/info/${slug}`} className="hover:text-white">
