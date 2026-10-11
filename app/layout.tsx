@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import DemoBanner from "@/components/DemoBanner";
 import AuthModal from "@/components/AuthModal";
 import { SITE } from "@/data/site";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "Nyxavor | Trending products at great prices",
@@ -40,6 +41,7 @@ export default function RootLayout({
               {children}
               <Footer />
               <AuthModal />
+              <Analytics />
             </CartProvider>
           </AuthProvider>
         </I18nProvider>
