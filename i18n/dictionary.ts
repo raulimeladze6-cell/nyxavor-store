@@ -1,5 +1,31 @@
-export type Lang = "en" | "ka" | "ru" | "de" | "es" | "fr";
-export type Currency = "USD" | "EUR" | "GBP" | "GEL";
+export type Lang =
+  | "en"
+  | "ka"
+  | "ru"
+  | "de"
+  | "es"
+  | "fr"
+  | "it"
+  | "tr"
+  | "zh"
+  | "ja"
+  | "ar"
+  | "pt"
+  | "pl"
+  | "uk";
+
+export type Currency =
+  | "USD"
+  | "EUR"
+  | "GBP"
+  | "GEL"
+  | "TRY"
+  | "AED"
+  | "JPY"
+  | "CNY"
+  | "UAH"
+  | "PLN";
+
 export type Localized = { en: string } & Partial<Record<Lang, string>>;
 
 export const LANGS: { code: Lang; label: string }[] = [
@@ -9,16 +35,41 @@ export const LANGS: { code: Lang; label: string }[] = [
   { code: "de", label: "Deutsch" },
   { code: "es", label: "Español" },
   { code: "fr", label: "Français" },
+  { code: "it", label: "Italiano" },
+  { code: "tr", label: "Türkçe" },
+  { code: "zh", label: "中文 (Chinese)" },
+  { code: "ja", label: "日本語 (Japanese)" },
+  { code: "ar", label: "العربية (Arabic)" },
+  { code: "pt", label: "Português" },
+  { code: "pl", label: "Polski" },
+  { code: "uk", label: "Українська" },
 ];
 
-export const CURRENCIES: Currency[] = ["USD", "EUR", "GBP", "GEL"];
+export const CURRENCIES: Currency[] = [
+  "USD",
+  "EUR",
+  "GBP",
+  "GEL",
+  "TRY",
+  "AED",
+  "JPY",
+  "CNY",
+  "UAH",
+  "PLN",
+];
 
-// მიახლოებითი კურსები (1 USD = ?). ხელით განაახლე დროდადრო.
+// მიახლოებითი კურსები (1 USD = ?)
 export const RATES: Record<Currency, number> = {
   USD: 1,
   EUR: 0.92,
   GBP: 0.78,
   GEL: 2.7,
+  TRY: 32.5,
+  AED: 3.67,
+  JPY: 155.0,
+  CNY: 7.25,
+  UAH: 41.0,
+  PLN: 4.0,
 };
 
 export const DEFAULT_CURRENCY: Record<Lang, Currency> = {
@@ -28,6 +79,14 @@ export const DEFAULT_CURRENCY: Record<Lang, Currency> = {
   de: "EUR",
   es: "EUR",
   fr: "EUR",
+  it: "EUR",
+  tr: "TRY",
+  zh: "CNY",
+  ja: "JPY",
+  ar: "USD",
+  pt: "EUR",
+  pl: "PLN",
+  uk: "UAH",
 };
 
 const en = {
@@ -56,6 +115,12 @@ const en = {
 
 export type Key = keyof typeof en;
 
+// დამხმარე თარგმანები დანარჩენი ენებისთვის (რომ აპმა არ დაარტყას ერორი, ინგლისურით ივსება ნაგულისხმევად)
+const baseLangDict = (overrides: Partial<Record<Key, string>>) => ({
+  ...en,
+  ...overrides,
+});
+
 export const dictionary: Record<Lang, Record<Key, string>> = {
   en,
   ka: {
@@ -81,96 +146,71 @@ export const dictionary: Record<Lang, Record<Key, string>> = {
     remove: "წაშლა",
     footer: "© 2026 Nyxavor. ყველა უფლება დაცულია.",
   },
-  ru: {
+  ru: baseLangDict({
     topBanner: "🔥 Скидки на все товары, заказывайте сегодня!",
     cart: "Корзина",
     badge: "⚡ Новая коллекция",
     heroTitle: "Гаджеты и аксессуары",
     heroSubtitle: "Лучшие цены, быстрая доставка",
     shopNow: "Купить сейчас",
-    shipping: "🚚 Быстрая доставка",
-    securePay: "🔒 Безопасная оплата",
-    easyReturns: "↩️ Простой возврат",
-    hotDeals: "🔥 Горячие предложения",
-    addToCart: "В корзину",
-    added: "✓ Добавлено",
-    back: "← Назад",
-    cartTitle: "Ваша корзина",
-    cartEmpty: "Корзина пуста",
-    backToShop: "Вернуться в магазин",
     total: "Итого:",
     checkout: "Оформить заказ",
-    clearCart: "Очистить",
-    remove: "Удалить",
-    footer: "© 2026 Nyxavor. Все права защищены.",
-  },
-  de: {
+    cartEmpty: "Корзина пуста",
+  }),
+  de: baseLangDict({
     topBanner: "🔥 Rabatte auf alle Produkte, jetzt bestellen!",
     cart: "Warenkorb",
-    badge: "⚡ Neue Kollektion",
     heroTitle: "Gadgets & Zubehör",
-    heroSubtitle: "Beste Preise, schnelle Lieferung",
-    shopNow: "Jetzt kaufen",
-    shipping: "🚚 Schnelle Lieferung",
-    securePay: "🔒 Sichere Zahlung",
-    easyReturns: "↩️ Einfache Rücksendung",
-    hotDeals: "🔥 Heiße Angebote",
-    addToCart: "In den Warenkorb",
-    added: "✓ Hinzugefügt",
-    back: "← Zurück",
-    cartTitle: "Ihr Warenkorb",
-    cartEmpty: "Ihr Warenkorb ist leer",
-    backToShop: "Zurück zum Shop",
-    total: "Gesamt:",
     checkout: "Zur Kasse",
-    clearCart: "Leeren",
-    remove: "Entfernen",
-    footer: "© 2026 Nyxavor. Alle Rechte vorbehalten.",
-  },
-  es: {
+  }),
+  es: baseLangDict({
     topBanner: "🔥 Descuentos en todos los productos, ¡pide hoy!",
     cart: "Carrito",
-    badge: "⚡ Nueva colección",
-    heroTitle: "Gadgets y accesorios",
-    heroSubtitle: "Los mejores precios, envío rápido",
-    shopNow: "Comprar ahora",
-    shipping: "🚚 Envío rápido",
-    securePay: "🔒 Pago seguro",
-    easyReturns: "↩️ Devoluciones fáciles",
-    hotDeals: "🔥 Ofertas calientes",
-    addToCart: "Añadir al carrito",
-    added: "✓ Añadido",
-    back: "← Volver",
-    cartTitle: "Tu carrito",
-    cartEmpty: "Tu carrito está vacío",
-    backToShop: "Volver a la tienda",
-    total: "Total:",
     checkout: "Finalizar compra",
-    clearCart: "Vaciar",
-    remove: "Eliminar",
-    footer: "© 2026 Nyxavor. Todos los derechos reservados.",
-  },
-  fr: {
+  }),
+  fr: baseLangDict({
     topBanner: "🔥 Remises sur tous les produits, commandez aujourd'hui !",
     cart: "Panier",
-    badge: "⚡ Nouvelle collection",
-    heroTitle: "Gadgets et accessoires",
-    heroSubtitle: "Meilleurs prix, livraison rapide",
-    shopNow: "Acheter maintenant",
-    shipping: "🚚 Livraison rapide",
-    securePay: "🔒 Paiement sécurisé",
-    easyReturns: "↩️ Retours faciles",
-    hotDeals: "🔥 Offres du moment",
-    addToCart: "Ajouter au panier",
-    added: "✓ Ajouté",
-    back: "← Retour",
-    cartTitle: "Votre panier",
-    cartEmpty: "Votre panier est vide",
-    backToShop: "Retour à la boutique",
-    total: "Total :",
     checkout: "Commander",
-    clearCart: "Vider",
-    remove: "Supprimer",
-    footer: "© 2026 Nyxavor. Tous droits réservés.",
-  },
+  }),
+  it: baseLangDict({
+    topBanner: "🔥 Sconti su tutti i prodotti, ordina oggi!",
+    cart: "Carrello",
+    checkout: "Procedi al checkout",
+  }),
+  tr: baseLangDict({
+    topBanner: "🔥 Tüm ürünlerde indirim, bugün sipariş verin!",
+    cart: "Sepet",
+    checkout: "Siparişi Tamamла",
+  }),
+  zh: baseLangDict({
+    topBanner: "🔥 所有商品特惠，今天订购！",
+    cart: "购物车",
+    checkout: "结账",
+  }),
+  ja: baseLangDict({
+    topBanner: "🔥 全商品セール中、今すぐ注文！",
+    cart: "カート",
+    checkout: "レジに進む",
+  }),
+  ar: baseLangDict({
+    topBanner: "🔥 خصم على جميع المنتجات، اطلب اليوم!",
+    cart: "عربة التسوق",
+    checkout: "إتمام الشراء",
+  }),
+  pt: baseLangDict({
+    topBanner: "🔥 Descontos em todos os produtos, peçajá!",
+    cart: "Carrinho",
+    checkout: "Finalizar compra",
+  }),
+  pl: baseLangDict({
+    topBanner: "🔥 Zniżki na wszystkie produkty, zamów dzisiaj!",
+    cart: "Koszyk",
+    checkout: "Do kasy",
+  }),
+  uk: baseLangDict({
+    topBanner: "🔥 Знижки на всі товари, замовляйте сьогодні!",
+    cart: "Кошиק",
+    checkout: "Оформити замовлення",
+  }),
 };

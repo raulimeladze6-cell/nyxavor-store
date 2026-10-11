@@ -13,9 +13,11 @@ type Sort = "default" | "low" | "high" | "discount";
 
 export default function Home() {
   const { t, pick, money, lang } = useI18n();
-  const h = homeText[lang];
-  const s = siteText[lang];
-  const cats = categoryNames[lang];
+
+  // უსაფრთხო Fallback ინგლისურზე, რომ ერორი არასდროს დაიჭიროს
+  const h = homeText[lang] || homeText["en"];
+  const s = siteText[lang] || siteText["en"];
+  const cats = categoryNames[lang] || categoryNames["en"];
 
   const [category, setCategory] = useState<Category | "all">("all");
   const [query, setQuery] = useState("");
@@ -120,7 +122,7 @@ export default function Home() {
               onClick={() => setCategory(c)}
               className={chipClass(category === c)}
             >
-              {cats[c]}
+              {cats[c] ?? c}
             </button>
           ))}
         </div>
@@ -146,7 +148,7 @@ export default function Home() {
                   )}
                   <ProductImage image={p.image} emoji={p.emoji} name={name} />
                   <p className="mt-3 text-xs text-gray-500">
-                    {cats[p.category]}
+                    {cats[p.category] ?? p.category}
                   </p>
                   <h3 className="text-sm font-semibold sm:text-base">{name}</h3>
                   <p className="mt-1">

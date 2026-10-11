@@ -8,22 +8,22 @@ import {
   ReactNode,
 } from "react";
 import {
-  dictionary,
   LANGS,
   RATES,
   DEFAULT_CURRENCY,
   Lang,
   Currency,
-  Key,
-  Localized,
-} from "@/i18n/dictionary";
+  getTranslation,
+} from "@/i18n/masterDictionary"; // 👈 შემოგვაქვს masterDictionary-დან!
+
+type Localized = { en: string } & Partial<Record<Lang, string>>;
 
 type I18nContextType = {
   lang: Lang;
   setLang: (l: Lang) => void;
   currency: Currency;
   setCurrency: (c: Currency) => void;
-  t: (key: Key) => string;
+  t: (key: string) => string;
   pick: (text: Localized) => string;
   money: (usd: number) => string;
 };
@@ -46,7 +46,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         setLangState(savedLang);
       } else if (isLang(browser)) {
         setLangState(browser);
-        setCurrencyState(DEFAULT_CURRENCY[browser]);
+        setCurrencyState(DEFAULT_CURRENCY[browser] || "USD");
       }
       if (savedCur && savedCur in RATES) setCurrencyState(savedCur as Currency);
     } catch {}
@@ -70,14 +70,21 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     } catch {}
   };
 
-  const t = (key: Key) => dictionary[lang][key];
+  // 💡 აი აქ ვიძახებთ masterDictionary-ს უსაფრთხო თარგმნის ფუნქციას!
+  const t = (key: string) => getTranslation(lang, key);
+
+  // 💡 პროდუქტის სახელის/აღწერის არჩევა ენის მიხედვით
   const pick = (text: Localized) => text[lang] ?? text.en;
-  const money = (usd: number) =>
-    new Intl.NumberFormat(lang, {
+
+  // 💡 ვალუტის გადაყვანა და ფორმატირება
+  const money = (usd: number) => {
+    const rate = RATES[currency] ?? 1;
+    return new Intl.NumberFormat(lang, {
       style: "currency",
       currency,
       maximumFractionDigits: 2,
-    }).format(usd * RATES[currency]);
+    }).format(usd * rate);
+  };
 
   return (
     <I18nContext.Provider

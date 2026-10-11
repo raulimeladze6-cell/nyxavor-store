@@ -1,0 +1,45 @@
+export interface PhoneCode {
+  code: string;
+  country: string;
+  flag: string;
+}
+
+export const PHONE_CODES: PhoneCode[] = [
+  { code: "+1", country: "United States / Canada", flag: "🇺🇸" },
+  { code: "+44", country: "United Kingdom", flag: "🇬🇧" },
+  { code: "+49", country: "Germany", flag: "🇩🇪" },
+  { code: "+33", country: "France", flag: "🇫🇷" },
+  { code: "+34", country: "Spain", flag: "🇪🇸" },
+  { code: "+39", country: "Italy", flag: "🇮🇹" },
+  { code: "+31", country: "Netherlands", flag: "🇳🇱" },
+  { code: "+32", country: "Belgium", flag: "🇧🇪" },
+  { code: "+41", country: "Switzerland", flag: "🇨🇭" },
+  { code: "+43", country: "Austria", flag: "🇦🇹" },
+  { code: "+46", country: "Sweden", flag: "🇸🇪" },
+  { code: "+47", country: "Norway", flag: "🇳🇴" },
+  { code: "+45", country: "Denmark", flag: "🇩🇰" },
+  { code: "+358", country: "Finland", flag: "🇫🇮" },
+  { code: "+48", country: "Poland", flag: "🇵🇱" },
+  { code: "+420", country: "Czech Republic", flag: "🇨🇿" },
+  { code: "+351", country: "Portugal", flag: "🇵🇹" },
+  { code: "+30", country: "Greece", flag: "🇬🇷" },
+  { code: "+36", country: "Hungary", flag: "🇭🇺" },
+  { code: "+372", country: "Estonia", flag: "🇪🇪" },
+  { code: "+371", country: "Latvia", flag: "🇱🇻" },
+  { code: "+370", country: "Lithuania", flag: "🇱🇹" },
+  { code: "+90", country: "Turkey", flag: "🇹🇷" },
+  { code: "+971", country: "United Arab Emirates", flag: "🇦🇪" },
+  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
+  { code: "+972", country: "Israel", flag: "🇮🇱" },
+  { code: "+81", country: "Japan", flag: "🇯🇵" },
+  { code: "+82", country: "South Korea", flag: "🇰🇷" },
+  { code: "+86", country: "China", flag: "🇨🇳" },
+  { code: "+91", country: "India", flag: "🇮🇳" },
+  { code: "+61", country: "Australia", flag: "🇦🇺" },
+  { code: "+64", country: "New Zealand", flag: "🇳🇿" },
+  { code: "+55", country: "Brazil", flag: "🇧🇷" },
+  { code: "+52", country: "Mexico", flag: "🇲🇽" },
+  { code: "+995", country: "Georgia", flag: "🇬🇪" },
+  { code: "+380", country: "Ukraine", flag: "🇺🇦" },
+  { code: "+7", country: "Kazakhstan", flag: "🇰🇿" },
+];

@@ -18,7 +18,8 @@ const en = {
 
 export type SiteKey = keyof typeof en;
 
-export const siteText: Record<Lang, Record<SiteKey, string>> = {
+// ვიყენებთ Partial<Record<SiteKey, string>>, რომ სავალდებულო არ იყოს ყველა ველის თავიდან ამოწერა და სადაც დააკლდება, en-იდან აიღოს
+export const siteText: Record<Lang, Partial<Record<SiteKey, string>>> = {
   en,
   ka: {
     sortBy: "დალაგება",
@@ -95,4 +96,13 @@ export const siteText: Record<Lang, Record<SiteKey, string>> = {
     terms: "Conditions d'utilisation",
     contact: "Contact",
   },
+  // დანარჩენი ენებისთვის რომ ერორი არ ამოაგდოს, ვამატებთ ცარიელ ობიექტებს ან ინგლისურს
+  it: en,
+  tr: en,
+  zh: en,
+  ja: en,
+  ar: en,
+  pt: en,
+  pl: en,
+  uk: en,
 };

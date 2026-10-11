@@ -7,12 +7,15 @@ import { accountText } from "@/i18n/accountDictionary";
 import { SITE } from "@/data/site";
 
 const inputClass =
-  "mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-pink-500 focus:outline-none";
+  "mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-pink-500 focus:outline-none text-gray-900";
 
 export default function AuthModal() {
   const { modal, openAuth, closeAuth, signIn, signUp, configured } = useAuth();
-  const { lang } = useI18n();
-  const a = accountText[lang];
+  const { lang, t } = useI18n();
+
+  // უსაფრთხო Fallback ძველი ლექსიკონისთვის, თუ რაიმე დეტალი აკლია
+  const a = accountText[lang] || accountText["en"];
+
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
@@ -50,11 +53,11 @@ export default function AuthModal() {
     setBusy(false);
 
     if (result.error) {
-      setError(a[result.error]);
+      setError(a[result.error] ?? result.error);
       return;
     }
     if (result.needsConfirm) {
-      setInfo(a.confirmEmail);
+      setInfo(a.confirmEmail ?? "Check your email for confirmation.");
       return;
     }
     closeAuth();
@@ -68,16 +71,16 @@ export default function AuthModal() {
       <div
         role="dialog"
         aria-modal="true"
-        className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl"
+        className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl text-gray-900"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-extrabold">
-            {isLogin ? a.loginTitle : a.registerTitle}
+            {isLogin ? t("signIn") : t("register")}
           </h2>
           <button
             onClick={closeAuth}
-            aria-label={a.close}
+            aria-label={t("close")}
             className="rounded-full px-2 py-1 text-lg hover:bg-gray-100"
           >
             ✕
@@ -86,12 +89,12 @@ export default function AuthModal() {
 
         {!configured ? (
           <p className="rounded-lg bg-yellow-50 p-3 text-sm text-yellow-800">
-            {a.notConfigured}
+            {a.notConfigured ?? "Auth is not configured."}
           </p>
         ) : (
           <form key={modal} onSubmit={submit} className="space-y-4">
             <label className="block text-sm font-medium">
-              {a.email}
+              Email
               <input
                 name="email"
                 type="email"
@@ -101,7 +104,7 @@ export default function AuthModal() {
               />
             </label>
             <label className="block text-sm font-medium">
-              {a.password}
+              Password
               <input
                 name="password"
                 type="password"
@@ -112,7 +115,7 @@ export default function AuthModal() {
               />
               {!isLogin && (
                 <span className="mt-1 block text-xs font-normal text-gray-500">
-                  {a.passwordHint}
+                  {a.passwordHint ?? "Minimum 8 characters"}
                 </span>
               )}
             </label>
@@ -131,9 +134,9 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={busy}
-              className="w-full rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 font-bold text-white shadow-lg disabled:opacity-60"
+              className="w-full rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 font-bold text-white shadow-lg disabled:opacity-60 transition"
             >
-              {busy ? a.working : isLogin ? a.signIn : a.register}
+              {busy ? "..." : isLogin ? t("signIn") : t("register")}
             </button>
 
             <button
@@ -141,11 +144,15 @@ export default function AuthModal() {
               onClick={() => openAuth(isLogin ? "register" : "login")}
               className="w-full text-center text-sm font-medium text-pink-600 hover:underline"
             >
-              {isLogin ? a.noAccount : a.haveAccount}
+              {isLogin
+                ? (a.noAccount ?? t("register"))
+                : (a.haveAccount ?? t("signIn"))}
             </button>
 
             {SITE.demo && (
-              <p className="text-xs text-yellow-700">{a.demoAuthNote}</p>
+              <p className="text-xs text-yellow-700">
+                {a.demoAuthNote ?? "Demo mode enabled"}
+              </p>
             )}
           </form>
         )}

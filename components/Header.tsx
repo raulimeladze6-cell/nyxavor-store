@@ -13,7 +13,15 @@ export default function Header() {
   const { totalCount } = useCart();
   const { t, lang } = useI18n();
   const { user, openAuth } = useAuth();
-  const a = accountText[lang];
+
+  // უსაფრთხო Fallback ინგლისურ ენაზე
+  const a = accountText[lang] ||
+    accountText["en"] || {
+      account: "Account",
+      signIn: "Sign In",
+      settings: "Settings",
+    };
+
   const [open, setOpen] = useState(false);
 
   const iconBtn =
@@ -41,7 +49,7 @@ export default function Header() {
                 title={user.email ?? a.account}
                 className={iconBtn}
               >
-                <span className="text-sm font-bold">
+                <span className="text-sm font-bold text-gray-900">
                   {(user.email ?? "?").charAt(0).toUpperCase()}
                 </span>
               </Link>

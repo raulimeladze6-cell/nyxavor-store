@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/context/I18nContext";
 
 export default function FlashSaleTimer() {
-  const { lang } = useI18n();
+  const { t } = useI18n();
   const [timeLeft, setTimeLeft] = useState({
     hours: 4,
-    minutes: 15,
-    seconds: 30,
+    minutes: 59,
+    seconds: 59,
   });
 
   useEffect(() => {
@@ -17,77 +17,48 @@ export default function FlashSaleTimer() {
         if (prev.seconds > 0) {
           return { ...prev, seconds: prev.seconds - 1 };
         } else if (prev.minutes > 0) {
-          return { ...prev, minutes: 59, seconds: 59 };
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
         } else if (prev.hours > 0) {
           return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        } else {
-          return { hours: 12, minutes: 0, seconds: 0 };
         }
+        return prev;
       });
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (time: number) => (time < 10 ? `0${time}` : time);
-
-  // ენის მიხედვით ტექსტების ადაპტაცია
-  const t = {
-    ka: {
-      title: "Flash Sale — დღის სპეციალური შეთავაზება",
-      subtitle: "ფასდაკლება მოქმედებს მხოლოდ შეზღუდული რაოდენობით!",
-      hours: "საათი",
-      minutes: "წუთი",
-      seconds: "წამი",
-    },
-    en: {
-      title: "Flash Sale — Limited Time Offer",
-      subtitle: "Discounts available while stock lasts!",
-      hours: "Hours",
-      minutes: "Mins",
-      seconds: "Secs",
-    },
-  }[lang === "ka" ? "ka" : "en"];
+  const format = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <div className="my-6 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-orange-500 p-4 text-white shadow-xl">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3 text-center sm:text-left">
-          <span className="text-3xl animate-bounce">⚡</span>
-          <div>
-            <h3 className="text-lg font-black uppercase tracking-wider">
-              {t.title}
-            </h3>
-            <p className="text-xs text-white/80">{t.subtitle}</p>
-          </div>
+    <div className="mb-6 rounded-2xl bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 p-4 text-white shadow-lg sm:p-6">
+      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <div>
+          <p className="text-xs font-bold tracking-wider uppercase sm:text-sm">
+            ⚡ {t("flashSaleTitle")}
+          </p>
+          <p className="mt-1 text-xs opacity-90 sm:text-sm">
+            {t("flashSaleSubtitle")}
+          </p>
         </div>
-
-        {/* ტაიმერი */}
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col items-center">
-            <span className="rounded-lg bg-black/40 px-3 py-1.5 font-mono text-lg font-bold backdrop-blur-sm border border-white/10">
-              {formatTime(timeLeft.hours)}
-            </span>
-            <span className="text-[10px] uppercase text-white/70 mt-1 font-semibold">
-              {t.hours}
+        <div className="flex items-center gap-2 text-center font-mono text-lg font-bold sm:text-xl">
+          <div className="rounded-xl bg-black/30 px-3 py-2">
+            <span>{format(timeLeft.hours)}</span>
+            <span className="block text-[10px] font-normal uppercase opacity-75">
+              Hours
             </span>
           </div>
-          <span className="text-xl font-bold pb-4">:</span>
-          <div className="flex flex-col items-center">
-            <span className="rounded-lg bg-black/40 px-3 py-1.5 font-mono text-lg font-bold backdrop-blur-sm border border-white/10">
-              {formatTime(timeLeft.minutes)}
-            </span>
-            <span className="text-[10px] uppercase text-white/70 mt-1 font-semibold">
-              {t.minutes}
+          <span>:</span>
+          <div className="rounded-xl bg-black/30 px-3 py-2">
+            <span>{format(timeLeft.minutes)}</span>
+            <span className="block text-[10px] font-normal uppercase opacity-75">
+              Mins
             </span>
           </div>
-          <span className="text-xl font-bold pb-4">:</span>
-          <div className="flex flex-col items-center">
-            <span className="rounded-lg bg-black/40 px-3 py-1.5 font-mono text-lg font-bold backdrop-blur-sm border border-white/10">
-              {formatTime(timeLeft.seconds)}
-            </span>
-            <span className="text-[10px] uppercase text-white/70 mt-1 font-semibold">
-              {t.seconds}
+          <span>:</span>
+          <div className="rounded-xl bg-black/30 px-3 py-2">
+            <span>{format(timeLeft.seconds)}</span>
+            <span className="block text-[10px] font-normal uppercase opacity-75">
+              Secs
             </span>
           </div>
         </div>

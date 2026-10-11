@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { useI18n } from "@/context/I18nContext";
-import { siteText } from "@/i18n/siteDictionary";
 import { LEGAL_SLUGS } from "@/i18n/legalDictionary";
 import { SITE } from "@/data/site";
 
 export default function Footer() {
-  const { t, lang } = useI18n();
-  const s = siteText[lang];
+  const { t } = useI18n();
 
   const openSupportChat = () => {
     if (typeof window !== "undefined" && (window as any).$crisp) {
@@ -26,20 +24,20 @@ export default function Footer() {
           <p className="mt-2">{SITE.email}</p>
         </div>
         <div>
-          <p className="mb-3 font-semibold text-white">{s.help}</p>
+          <p className="mb-3 font-semibold text-white">{t("help")}</p>
           <ul className="space-y-2">
             <li>
               <button
                 onClick={openSupportChat}
-                className="flex items-center gap-2 hover:text-white transition-colors text-left font-medium text-pink-400 hover:text-pink-300"
+                className="flex items-center gap-2 transition-colors text-left font-medium text-pink-400 hover:text-pink-300"
               >
-                <span>💬</span> Live Support / მხარდაჭერა
+                <span>💬</span> {t("help")}
               </button>
             </li>
             {LEGAL_SLUGS.map((slug) => (
               <li key={slug}>
                 <Link href={`/info/${slug}`} className="hover:text-white">
-                  {s[slug]}
+                  {t(slug)}
                 </Link>
               </li>
             ))}

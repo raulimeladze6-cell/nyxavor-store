@@ -23,14 +23,10 @@ export default function CartPage() {
     if (promoCode.trim().toUpperCase() === "NYX10") {
       setDiscount(0.1);
       setPromoSuccess(
-        lang === "ka"
-          ? "🎉 10%-იანი ფასდაკლების კოდი გააქტიურებულია!"
-          : "🎉 10% promo code applied successfully!",
+        t("promoSuccess") || "🎉 10% promo code applied successfully!",
       );
     } else {
-      setPromoError(
-        lang === "ka" ? "არასწორი პრომო კოდი" : "Invalid promo code",
-      );
+      setPromoError(t("promoError") || "Invalid promo code");
     }
   };
 
@@ -39,12 +35,12 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto max-w-2xl px-4 py-16 text-center">
+      <main className="mx-auto max-w-2xl px-4 py-16 text-center text-white">
         <p className="text-5xl">🛒</p>
         <h1 className="mt-4 text-2xl font-bold">{t("cartEmpty")}</h1>
         <Link
           href="/"
-          className="mt-6 inline-block rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 font-bold text-white"
+          className="mt-6 inline-block rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 font-bold text-white shadow-lg"
         >
           {t("backToShop")}
         </Link>
@@ -53,10 +49,10 @@ export default function CartPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 text-white">
       <h1 className="mb-6 text-2xl font-extrabold">{t("cartTitle")}</h1>
 
-      <ul className="divide-y rounded-2xl bg-white px-4 shadow-sm">
+      <ul className="divide-y divide-gray-700 rounded-2xl bg-gray-800 px-4 shadow-sm border border-gray-700">
         {items.map((item) => {
           const product = products.find((p) => p.slug === item.slug);
           const name = product ? pick(product.name) : item.name;
@@ -67,27 +63,29 @@ export default function CartPage() {
             >
               <span className="text-4xl">{item.emoji}</span>
               <div className="min-w-0 flex-1">
-                <p className="font-medium">{name}</p>
-                <p className="text-gray-600">{money(item.price)}</p>
+                <p className="font-medium text-gray-200">{name}</p>
+                <p className="text-gray-400">{money(item.price)}</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => changeQuantity(item.slug, -1)}
-                  className="h-8 w-8 rounded-full border"
+                  className="h-8 w-8 rounded-full border border-gray-600 bg-gray-900 text-white flex items-center justify-center hover:bg-gray-700 transition"
                 >
                   −
                 </button>
-                <span className="w-6 text-center">{item.quantity}</span>
+                <span className="w-6 text-center text-white">
+                  {item.quantity}
+                </span>
                 <button
                   onClick={() => changeQuantity(item.slug, 1)}
-                  className="h-8 w-8 rounded-full border"
+                  className="h-8 w-8 rounded-full border border-gray-600 bg-gray-900 text-white flex items-center justify-center hover:bg-gray-700 transition"
                 >
                   +
                 </button>
               </div>
               <button
                 onClick={() => removeItem(item.slug)}
-                className="text-sm text-red-600"
+                className="text-sm text-red-400 hover:text-red-300 transition"
               >
                 {t("remove")}
               </button>
@@ -97,56 +95,54 @@ export default function CartPage() {
       </ul>
 
       {/* პრომო კოდის ველი */}
-      <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm">
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-          {lang === "ka" ? "პრომო კოდი" : "Promo Code"}
+      <div className="mt-6 rounded-2xl bg-gray-800 p-4 shadow-sm border border-gray-700">
+        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+          {t("promoCodeLabel")}
         </label>
         <div className="flex gap-2">
           <input
             type="text"
             value={promoCode}
             onChange={(e) => setPromoCode(e.target.value)}
-            placeholder={lang === "ka" ? "მაგ: NYX10" : "e.g. NYX10"}
-            className="flex-1 rounded-xl border border-gray-300 px-4 py-2 text-sm uppercase focus:border-pink-500 focus:outline-none"
+            placeholder={t("promoPlaceholder")}
+            className="flex-1 rounded-xl border border-gray-600 bg-gray-900 px-4 py-2 text-sm text-white uppercase focus:border-pink-500 focus:outline-none"
           />
           <button
             onClick={handleApplyPromo}
-            className="rounded-xl bg-gray-900 px-5 py-2 text-sm font-bold text-white hover:bg-gray-800"
+            className="rounded-xl bg-pink-600 hover:bg-pink-500 px-5 py-2 text-sm font-bold text-white transition"
           >
-            {lang === "ka" ? "გამოყენება" : "Apply"}
+            {t("apply")}
           </button>
         </div>
         {promoError && (
-          <p className="mt-2 text-xs font-semibold text-red-500">
+          <p className="mt-2 text-xs font-semibold text-red-400">
             {promoError}
           </p>
         )}
         {promoSuccess && (
-          <p className="mt-2 text-xs font-semibold text-green-600">
+          <p className="mt-2 text-xs font-semibold text-emerald-400">
             {promoSuccess}
           </p>
         )}
       </div>
 
       {/* ჯამური თანხის სექცია */}
-      <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm space-y-2">
-        <div className="flex justify-between text-sm text-gray-600">
-          <span>{lang === "ka" ? "ქვეჯამი:" : "Subtotal:"}</span>
+      <div className="mt-6 rounded-2xl bg-gray-800 p-4 shadow-sm space-y-2 border border-gray-700">
+        <div className="flex justify-between text-sm text-gray-300">
+          <span>{t("subtotal")}</span>
           <span>{money(totalPrice)}</span>
         </div>
 
         {discount > 0 && (
-          <div className="flex justify-between text-sm font-bold text-green-600">
-            <span>
-              {lang === "ka" ? "ფასდაკლება (10%):" : "Discount (10%):"}
-            </span>
+          <div className="flex justify-between text-sm font-bold text-emerald-400">
+            <span>{t("discountLabel")}</span>
             <span>-{money(savedAmount)}</span>
           </div>
         )}
 
-        <div className="flex items-center justify-between border-t pt-3 text-xl font-extrabold text-gray-900">
+        <div className="flex items-center justify-between border-t border-gray-700 pt-3 text-xl font-extrabold text-white">
           <span>{t("total")}</span>
-          <span className={discount > 0 ? "text-pink-600" : ""}>
+          <span className={discount > 0 ? "text-pink-400" : ""}>
             {money(finalPrice)}
           </span>
         </div>
@@ -155,13 +151,13 @@ export default function CartPage() {
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <Link
           href="/checkout"
-          className="flex-1 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 text-center font-bold text-white shadow-lg hover:brightness-105"
+          className="flex-1 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3 text-center font-bold text-white shadow-lg hover:opacity-90 transition"
         >
           {t("checkout")}
         </Link>
         <button
           onClick={clearCart}
-          className="rounded-full border px-6 py-3 font-semibold text-gray-700 hover:bg-gray-50"
+          className="rounded-full border border-gray-600 bg-gray-800 px-6 py-3 font-semibold text-gray-300 hover:bg-gray-700 hover:text-white transition"
         >
           {t("clearCart")}
         </button>

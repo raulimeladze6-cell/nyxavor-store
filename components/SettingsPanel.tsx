@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
-import { LANGS, CURRENCIES, Lang, Currency } from "@/i18n/dictionary";
-import { accountText } from "@/i18n/accountDictionary";
-import { siteText } from "@/i18n/siteDictionary";
+import { LANGS, CURRENCIES, Lang, Currency } from "@/i18n/masterDictionary";
 import { LEGAL_SLUGS } from "@/i18n/legalDictionary";
 
 type Theme = "light" | "dark" | "comfort";
@@ -22,7 +20,7 @@ const THEMES: {
 ];
 
 const selectClass =
-  "mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm";
+  "mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900";
 
 export default function SettingsPanel({
   open,
@@ -31,10 +29,8 @@ export default function SettingsPanel({
   open: boolean;
   onClose: () => void;
 }) {
-  const { lang, setLang, currency, setCurrency } = useI18n();
+  const { lang, setLang, currency, setCurrency, t } = useI18n();
   const { user, signOut, openAuth } = useAuth();
-  const a = accountText[lang];
-  const s = siteText[lang];
   const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
@@ -82,14 +78,14 @@ export default function SettingsPanel({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={a.settings}
-        className="fixed inset-x-2 top-2 z-[60] max-h-[calc(100vh-1rem)] overflow-y-auto rounded-2xl border bg-white p-5 shadow-2xl sm:inset-x-auto sm:right-4 sm:top-4 sm:w-96"
+        aria-label={t("settings")}
+        className="fixed inset-x-2 top-2 z-[60] max-h-[calc(100vh-1rem)] overflow-y-auto rounded-2xl border bg-white p-5 shadow-2xl sm:inset-x-auto sm:right-4 sm:top-4 sm:w-96 text-gray-900"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold">⚙️ {a.settings}</h2>
+          <h2 className="text-xl font-extrabold">⚙️ {t("settings")}</h2>
           <button
             onClick={onClose}
-            aria-label={a.close}
+            aria-label={t("close")}
             className="rounded-full px-2 py-1 text-lg hover:bg-gray-100"
           >
             ✕
@@ -98,34 +94,34 @@ export default function SettingsPanel({
 
         {/* ანგარიში */}
         <section className="mb-5 rounded-xl bg-gray-100 p-4">
-          <p className="mb-2 text-sm font-bold">{a.account}</p>
+          <p className="mb-2 text-sm font-bold">{t("account")}</p>
           {user ? (
             <>
-              <p className="text-xs text-gray-500">{a.signedInAs}</p>
+              <p className="text-xs text-gray-500">{t("signedInAs")}</p>
               <p className="break-all text-sm font-semibold">{user.email}</p>
               <button
                 onClick={async () => {
                   await signOut();
                   onClose();
                 }}
-                className="mt-3 w-full rounded-full border px-4 py-2 text-sm font-semibold hover:bg-white"
+                className="mt-3 w-full rounded-full border px-4 py-2 text-sm font-semibold hover:bg-white transition"
               >
-                {a.signOut}
+                {t("signOut")}
               </button>
             </>
           ) : (
             <div className="flex gap-2">
               <button
                 onClick={() => goAuth("login")}
-                className="flex-1 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-3 py-2 text-sm font-bold text-white"
+                className="flex-1 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-3 py-2 text-sm font-bold text-white shadow hover:opacity-95"
               >
-                {a.signIn}
+                {t("signIn")}
               </button>
               <button
                 onClick={() => goAuth("register")}
-                className="flex-1 rounded-full border px-3 py-2 text-sm font-semibold hover:bg-white"
+                className="flex-1 rounded-full border px-3 py-2 text-sm font-semibold hover:bg-white transition"
               >
-                {a.register}
+                {t("register")}
               </button>
             </div>
           )}
@@ -134,7 +130,7 @@ export default function SettingsPanel({
         {/* ენა და ვალუტა */}
         <div className="mb-5 grid grid-cols-2 gap-3">
           <label className="block text-sm font-medium">
-            {a.language}
+            {t("language")}
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value as Lang)}
@@ -148,7 +144,7 @@ export default function SettingsPanel({
             </select>
           </label>
           <label className="block text-sm font-medium">
-            {a.currency}
+            {t("currency")}
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value as Currency)}
@@ -163,37 +159,37 @@ export default function SettingsPanel({
           </label>
         </div>
 
-        {/* თემა */}
+        {/* იერსახე (თემა) */}
         <section className="mb-5">
-          <p className="mb-2 text-sm font-medium">{a.theme}</p>
+          <p className="mb-2 text-sm font-medium">{t("theme")}</p>
           <div className="grid grid-cols-3 gap-2">
             {THEMES.map((th) => (
               <button
                 key={th.id}
                 onClick={() => setTheme(th.id)}
-                className={`rounded-xl border px-2 py-2 text-xs font-semibold ${
+                className={`rounded-xl border px-2 py-2 text-xs font-semibold transition ${
                   theme === th.id
                     ? "bg-gray-900 text-white"
                     : "bg-white hover:bg-gray-100"
                 }`}
               >
                 <span className="block text-lg">{th.icon}</span>
-                {a[th.key]}
+                {t(th.key)}
               </button>
             ))}
           </div>
         </section>
 
-        {/* ინფორმაცია / Help */}
+        {/* მხარდაჭერა / Help */}
         <section>
-          <p className="mb-2 text-sm font-medium">{s.help}</p>
+          <p className="mb-2 text-sm font-medium">{t("help")}</p>
           <ul className="space-y-1 text-sm">
             <li>
               <button
                 onClick={openLiveChat}
-                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 font-semibold text-pink-600 hover:bg-pink-50 text-left"
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 font-semibold text-pink-600 hover:bg-pink-50 text-left transition"
               >
-                <span>💬</span> Live Support / მხარდაჭერა
+                <span>💬</span> {t("help")}
               </button>
             </li>
             {LEGAL_SLUGS.map((slug) => (
@@ -201,9 +197,9 @@ export default function SettingsPanel({
                 <Link
                   href={`/info/${slug}`}
                   onClick={onClose}
-                  className="block rounded-lg px-2 py-2 text-pink-600 hover:bg-gray-100"
+                  className="block rounded-lg px-2 py-2 text-pink-600 hover:bg-gray-100 transition"
                 >
-                  {s[slug]}
+                  {t(slug)}
                 </Link>
               </li>
             ))}
