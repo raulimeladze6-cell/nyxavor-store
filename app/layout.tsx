@@ -1,3 +1,4 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import "./globals.css";
 import { I18nProvider } from "@/context/I18nContext";
@@ -42,6 +43,7 @@ export default function RootLayout({
               <Footer />
               <AuthModal />
               <Analytics />
+              <SpeedInsights />
             </CartProvider>
           </AuthProvider>
         </I18nProvider>
