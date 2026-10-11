@@ -94,7 +94,7 @@ const PHONE_CODES = [
 ];
 
 const inputClass =
-  "w-full rounded-lg border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500 transition";
+  "w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500 transition";
 
 type Status = "idle" | "sending" | "done" | "error";
 type PaymentMethod = "card" | "paypal";
@@ -122,22 +122,26 @@ export default function CheckoutPage() {
 
   if (status === "done") {
     return (
-      <main className="mx-auto max-w-2xl px-4 py-16 text-center text-white">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/20 text-4xl text-emerald-400 border border-emerald-500/30 mb-4 animate-bounce">
+      <main className="mx-auto max-w-2xl px-4 py-16 text-center text-gray-900 dark:text-white">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/20 text-4xl text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 mb-4 animate-bounce">
           ✓
         </div>
         <h1 className="text-2xl font-bold sm:text-3xl">{t("successTitle")}</h1>
-        <p className="mt-3 text-gray-300">{t("successText")}</p>
+        <p className="mt-3 text-gray-600 dark:text-gray-300">
+          {t("successText")}
+        </p>
         {orderId && (
-          <p className="mt-4 inline-block rounded-lg bg-gray-800 px-4 py-2 text-sm text-gray-300 border border-gray-700">
+          <p className="mt-4 inline-block rounded-lg bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700">
             {t("orderNumber")}:{" "}
-            <span className="font-mono font-bold text-pink-400">{orderId}</span>
+            <span className="font-mono font-bold text-pink-600 dark:text-pink-400">
+              {orderId}
+            </span>
           </p>
         )}
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <Link
             href="/profile"
-            className="rounded-full bg-gray-800 border border-gray-700 px-6 py-3 font-bold text-white hover:bg-gray-700 transition"
+            className="rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 px-6 py-3 font-bold text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition"
           >
             {t("account")}
           </Link>
@@ -154,7 +158,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto max-w-2xl px-4 py-16 text-center text-white">
+      <main className="mx-auto max-w-2xl px-4 py-16 text-center text-gray-900 dark:text-white">
         <p className="text-6xl mb-4">🛒</p>
         <h1 className="text-2xl font-bold">{t("cartEmpty")}</h1>
         <Link
@@ -224,8 +228,8 @@ export default function CheckoutPage() {
   };
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 text-white">
-      <h1 className="mb-6 text-2xl font-extrabold sm:text-3xl">
+    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 text-gray-900 dark:text-white">
+      <h1 className="mb-6 text-2xl font-extrabold sm:text-3xl text-pink-600 dark:text-pink-400">
         {t("checkout")}
       </h1>
 
@@ -240,12 +244,12 @@ export default function CheckoutPage() {
 
         <div className="space-y-6 lg:col-span-2">
           {/* Contact Information */}
-          <section className="rounded-2xl bg-gray-800 p-4 shadow-sm sm:p-6 border border-gray-700">
-            <h2 className="mb-4 text-lg font-bold text-pink-400 flex items-center gap-2">
+          <section className="rounded-2xl bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700 transition-colors">
+            <h2 className="mb-4 text-lg font-bold text-pink-600 dark:text-pink-400 flex items-center gap-2">
               <span>👤</span> {t("contact")}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block text-sm font-medium sm:col-span-2 text-gray-300">
+              <label className="block text-sm font-medium sm:col-span-2 text-gray-700 dark:text-gray-300">
                 {t("fullName")}
                 <input
                   name="name"
@@ -256,7 +260,7 @@ export default function CheckoutPage() {
                   placeholder="John Doe"
                 />
               </label>
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("email")}
                 <input
                   name="email"
@@ -268,27 +272,27 @@ export default function CheckoutPage() {
                   placeholder="customer@example.com"
                 />
               </label>
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("phone")}
                 <div className="mt-1 flex flex-col gap-2">
                   <div className="flex gap-2">
                     <select
                       value={phonePrefix}
                       onChange={(e) => setPhonePrefix(e.target.value)}
-                      className="rounded-lg border border-gray-600 bg-gray-900 px-2 py-2 text-sm text-white focus:border-pink-500 focus:outline-none max-w-[130px]"
+                      className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-2 py-2 text-sm text-gray-900 dark:text-white focus:border-pink-500 focus:outline-none max-w-[130px]"
                     >
                       {PHONE_CODES.map((p) => (
                         <option
                           key={`${p.code}-${p.country}`}
                           value={p.code}
-                          className="bg-gray-800 text-white"
+                          className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                         >
                           {p.flag} {p.code}
                         </option>
                       ))}
                       <option
                         value="OTHER"
-                        className="bg-gray-800 text-pink-400 font-semibold"
+                        className="bg-white dark:bg-gray-800 text-pink-600 dark:text-pink-400 font-semibold"
                       >
                         🌐 Other (+...)
                       </option>
@@ -309,12 +313,12 @@ export default function CheckoutPage() {
           </section>
 
           {/* Shipping Address */}
-          <section className="rounded-2xl bg-gray-800 p-4 shadow-sm sm:p-6 border border-gray-700">
-            <h2 className="mb-4 text-lg font-bold text-pink-400 flex items-center gap-2">
+          <section className="rounded-2xl bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700 transition-colors">
+            <h2 className="mb-4 text-lg font-bold text-pink-600 dark:text-pink-400 flex items-center gap-2">
               <span>📍</span> {t("shippingAddress")}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block text-sm font-medium sm:col-span-2 text-gray-300">
+              <label className="block text-sm font-medium sm:col-span-2 text-gray-700 dark:text-gray-300">
                 {t("country")}
                 <select
                   name="country"
@@ -324,14 +328,18 @@ export default function CheckoutPage() {
                   autoComplete="country"
                   className={`${inputClass} mt-1`}
                 >
-                  <option value="" disabled className="bg-gray-800">
+                  <option
+                    value=""
+                    disabled
+                    className="bg-white dark:bg-gray-800 text-gray-500"
+                  >
                     {t("selectCountry")}
                   </option>
                   {countries.map((c) => (
                     <option
                       key={c.code}
                       value={c.name}
-                      className="bg-gray-800 text-white"
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     >
                       {c.name}
                     </option>
@@ -339,7 +347,7 @@ export default function CheckoutPage() {
                 </select>
               </label>
 
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("city")}
                 <input
                   name="city"
@@ -349,7 +357,7 @@ export default function CheckoutPage() {
                   placeholder="City"
                 />
               </label>
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("postalCode")}
                 <input
                   name="postal"
@@ -359,7 +367,7 @@ export default function CheckoutPage() {
                   placeholder="ZIP / Postal Code"
                 />
               </label>
-              <label className="block text-sm font-medium sm:col-span-2 text-gray-300">
+              <label className="block text-sm font-medium sm:col-span-2 text-gray-700 dark:text-gray-300">
                 {t("address")}
                 <input
                   name="address"
@@ -374,22 +382,24 @@ export default function CheckoutPage() {
         </div>
 
         {/* Order Summary */}
-        <aside className="h-fit rounded-2xl bg-gray-800 p-4 shadow-sm sm:p-6 border border-gray-700 sticky top-4">
-          <h2 className="mb-4 text-lg font-bold text-pink-400">
+        <aside className="h-fit rounded-2xl bg-white dark:bg-gray-800 p-4 shadow-md sm:p-6 border border-gray-200 dark:border-gray-700 sticky top-4 transition-colors">
+          <h2 className="mb-4 text-lg font-bold text-pink-600 dark:text-pink-400">
             {t("orderSummary")}
           </h2>
-          <ul className="divide-y divide-gray-700 text-sm max-h-60 overflow-y-auto pr-1">
+          <ul className="divide-y divide-gray-200 dark:divide-gray-700 text-sm max-h-60 overflow-y-auto pr-1">
             {items.map((item) => {
               const product = products.find((p) => p.slug === item.slug);
               const name = product ? pick(product.name) : item.name;
               return (
                 <li key={item.slug} className="flex items-center gap-3 py-3">
                   <span className="text-2xl">{item.emoji}</span>
-                  <span className="min-w-0 flex-1 text-gray-200">
+                  <span className="min-w-0 flex-1 text-gray-800 dark:text-gray-200">
                     {name}{" "}
-                    <span className="text-gray-400">× {item.quantity}</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      × {item.quantity}
+                    </span>
                   </span>
-                  <span className="font-semibold text-white">
+                  <span className="font-semibold text-gray-900 dark:text-white">
                     {money(item.price * item.quantity)}
                   </span>
                 </li>
@@ -397,15 +407,19 @@ export default function CheckoutPage() {
             })}
           </ul>
 
-          <div className="mt-4 flex items-center justify-between border-t border-gray-700 pt-4 text-lg font-bold">
-            <span>{t("total")}</span>
-            <span className="text-pink-400">{money(totalPrice)}</span>
+          <div className="mt-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4 text-lg font-bold">
+            <span className="text-gray-800 dark:text-gray-200">
+              {t("total")}
+            </span>
+            <span className="text-pink-600 dark:text-pink-400">
+              {money(totalPrice)}
+            </span>
           </div>
 
           <button
             type="submit"
             disabled={status === "sending"}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3.5 font-bold text-white shadow-lg transition"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 px-6 py-3.5 font-bold text-white shadow-lg transition hover:opacity-95"
           >
             {status === "sending" ? (
               <span>{t("sending")}</span>

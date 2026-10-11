@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useI18n } from "@/context/I18nContext";
-import { LEGAL_SLUGS } from "@/i18n/legalDictionary";
+import { LEGAL_SLUGS, legalPages } from "@/i18n/legalDictionary";
 import { SITE } from "@/data/site";
 
 export default function Footer() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const openSupportChat = () => {
     if (typeof window !== "undefined" && (window as any).$crisp) {
@@ -37,7 +37,9 @@ export default function Footer() {
             {LEGAL_SLUGS.map((slug) => (
               <li key={slug}>
                 <Link href={`/info/${slug}`} className="hover:text-white">
-                  {t(slug)}
+                  {legalPages[slug]?.title[lang] ||
+                    legalPages[slug]?.title["en"] ||
+                    t(slug)}
                 </Link>
               </li>
             ))}
